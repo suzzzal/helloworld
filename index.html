@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Internship Verification</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 24px;
+    background: #f5f6f8;
+    font-family: "Nunito Sans", "Segoe UI", Arial, sans-serif;
+    color: #212529;
+  }
+  .card {
+    max-width: 920px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 14px;
+    padding: 38px 38px 44px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  }
+  h1 { margin: 0 0 24px; font-size: 32px; font-weight: 700; }
+  p.hint { margin: 0 0 30px; color: #6c757d; font-size: 17px; }
+  .row { display: flex; gap: 12px; align-items: stretch; flex-wrap: wrap; }
+  .input-group { display: flex; flex: 1 1 320px; min-width: 0; }
+  .prefix {
+    display: flex; align-items: center;
+    padding: 0 16px;
+    background: #e9ecef;
+    border: 1px solid #ced4da;
+    border-right: 0;
+    border-radius: 4px 0 0 4px;
+    font-size: 18px; color: #495057;
+  }
+  input {
+    flex: 1; min-width: 0;
+    padding: 14px 16px;
+    font: inherit; font-size: 18px;
+    border: 1px solid #ced4da;
+    border-radius: 0 4px 4px 0;
+    outline: none;
+  }
+  input:focus { border-color: #22c77a; box-shadow: 0 0 0 3px rgba(34, 199, 122, 0.2); }
+  button {
+    flex: 0 0 270px;
+    padding: 14px 20px;
+    background: #22c77a;
+    color: #fff;
+    border: 0; border-radius: 4px;
+    font: inherit; font-size: 18px; font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+  }
+  button:hover { background: #1db56e; }
+  button:focus-visible { outline: 3px solid #0f7a49; outline-offset: 2px; }
+  @media (max-width: 600px) { button { flex: 1 1 100%; } }
+
+  #result { margin-top: 26px; min-height: 28px; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+  #result.success { color: #1a9d5f; }
+  #result.error { color: #d63b3b; }
+  .tick {
+    width: 30px; height: 30px; flex: none;
+    border-radius: 50%;
+    background: #22c77a;
+    display: grid; place-items: center;
+  }
+  .tick svg { width: 18px; height: 18px; }
+  .tick path {
+    fill: none; stroke: #fff; stroke-width: 3;
+    stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 24; stroke-dashoffset: 24;
+    animation: draw .4s ease forwards;
+  }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @media (prefers-reduced-motion: reduce) { .tick path { animation: none; stroke-dashoffset: 0; } }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Internship Verification</h1>
+    <p class="hint">Enter your ID number (example: 12345) to verify details.</p>
+
+    <div class="row">
+      <div class="input-group">
+        <span class="prefix">IPI#</span>
+        <input id="idInput" type="text" inputmode="numeric" placeholder="12345" autocomplete="off" aria-label="ID number">
+      </div>
+      <button id="verifyBtn" type="button">VERIFY</button>
+    </div>
+
+    <div id="result" role="status" aria-live="polite"></div>
+  </div>
+
+<script>
+  const VALID_ID = "3556";
+  const input = document.getElementById("idInput");
+  const result = document.getElementById("result");
+
+  function verify() {
+    const value = input.value.trim();
+    result.className = "";
+    result.innerHTML = "";
+
+    if (!value) {
+      result.className = "error";
+      result.textContent = "Please enter your ID number.";
+      return;
+    }
+
+    if (value === VALID_ID) {
+      result.className = "success";
+      result.innerHTML =
+        '<span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>' +
+        '<span>Successful</span>';
+    } else {
+      result.className = "error";
+      result.textContent = "ID not found. Check the number and try again.";
+    }
+  }
+
+  document.getElementById("verifyBtn").addEventListener("click", verify);
+  input.addEventListener("keydown", e => { if (e.key === "Enter") verify(); });
+</script>
+</body>
+</html>
