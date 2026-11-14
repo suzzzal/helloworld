@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Internship Verification</title>
+<title>Cognifyz Certificate Validation</title>
 <style>
   * { box-sizing: border-box; }
   body {
@@ -13,6 +13,13 @@
     background: #f5f6f8;
     font-family: "Nunito Sans", "Segoe UI", Arial, sans-serif;
     color: #212529;
+  }
+  .page-title {
+    max-width: 920px;
+    margin: 8px auto 22px;
+    text-align: center;
+    font-size: 36px;
+    font-weight: 800;
   }
   .card {
     max-width: 920px;
@@ -34,6 +41,7 @@
     border-right: 0;
     border-radius: 4px 0 0 4px;
     font-size: 18px; color: #495057;
+    white-space: nowrap;
   }
   input {
     flex: 1; min-width: 0;
@@ -76,33 +84,83 @@
   }
   @keyframes draw { to { stroke-dashoffset: 0; } }
   @media (prefers-reduced-motion: reduce) { .tick path { animation: none; stroke-dashoffset: 0; } }
+
+  /* Result table */
+  .table-wrap { margin-top: 22px; overflow-x: auto; border: 1px solid #dee2e6; }
+  .table-wrap[hidden] { display: none; }
+  table { width: 100%; border-collapse: collapse; font-size: 18px; min-width: 640px; }
+  th, td { padding: 16px; text-align: left; vertical-align: top; border-right: 1px solid #dee2e6; line-height: 1.8; }
+  th:last-child, td:last-child { border-right: 0; }
+  thead th { background: #e9ecef; font-weight: 700; color: #343a40; border-bottom: 2px solid #dee2e6; vertical-align: bottom; }
+  tbody td { background: #fff; }
 </style>
 </head>
 <body>
+  <h2 class="page-title">Cognifyz Certificate Validation</h2>
+
   <div class="card">
     <h1>Internship Verification</h1>
     <p class="hint">Enter your ID number (example: 12345) to verify details.</p>
 
     <div class="row">
       <div class="input-group">
-        <span class="prefix">IPI#</span>
+        <span class="prefix">CTI/A3/C</span>
         <input id="idInput" type="text" inputmode="numeric" placeholder="12345" autocomplete="off" aria-label="ID number">
       </div>
       <button id="verifyBtn" type="button">VERIFY</button>
     </div>
 
     <div id="result" role="status" aria-live="polite"></div>
+
+    <div class="table-wrap" id="tableWrap" hidden>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Domain</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Total Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="cId"></td>
+            <td id="cName"></td>
+            <td id="cDomain"></td>
+            <td id="cStart"></td>
+            <td id="cEnd"></td>
+            <td id="cDuration"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
 <script>
-  const VALID_ID = "3556";
+  const PREFIX = "CTI/A3/C";
+
+  // Demo data: add more IDs here
+  const RECORDS = {
+    "3556": {
+      name: "SUJAL KSHATRI",
+      domain: "AI Intern",
+      start: "02-05-2026",
+      end: "28-06-2026",
+      duration: "8 WEEKS"
+    }
+  };
+
   const input = document.getElementById("idInput");
   const result = document.getElementById("result");
+  const tableWrap = document.getElementById("tableWrap");
 
   function verify() {
     const value = input.value.trim();
     result.className = "";
     result.innerHTML = "";
+    tableWrap.hidden = true;
 
     if (!value) {
       result.className = "error";
@@ -110,11 +168,20 @@
       return;
     }
 
-    if (value === VALID_ID) {
+    const rec = RECORDS[value];
+    if (rec) {
       result.className = "success";
       result.innerHTML =
         '<span class="tick"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>' +
-        '<span>Successful</span>';
+        '<span>Valid Certificate</span>';
+
+      document.getElementById("cId").textContent = PREFIX + value;
+      document.getElementById("cName").textContent = rec.name;
+      document.getElementById("cDomain").textContent = rec.domain;
+      document.getElementById("cStart").textContent = rec.start;
+      document.getElementById("cEnd").textContent = rec.end;
+      document.getElementById("cDuration").textContent = rec.duration;
+      tableWrap.hidden = false;
     } else {
       result.className = "error";
       result.textContent = "ID not found. Check the number and try again.";
